@@ -5,7 +5,8 @@
 
 原版：https://github.com/ShirasawaSama/CefDetectorX
 
-
+## 截图
+![应用截图](./screenshot.png)
 
 ## 图标
 [404](https://icons8.com/icon/PLJWnvM1vQLJ/page-not-found) icon by [Icons8](https://icons8.com)
