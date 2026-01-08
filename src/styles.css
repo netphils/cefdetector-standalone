@@ -1,0 +1,444 @@
+:root {
+  font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  color: #0f0f0f;
+  background-color: #f6f6f6;
+
+  /* 保留背景图 */
+  background-image: url('assets/background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.container {
+  width: 1000px;
+  height: 749px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 30px;
+  box-sizing: border-box;
+  background-color: rgba(255, 255, 255, 0.85);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(5px);
+  position: relative;
+}
+
+/* Logo容器样式 */
+.logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  margin-bottom: 40px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 90%;
+  max-width: 800px;
+}
+
+.logo-item {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 20px;
+  background-color: #ffffff;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+}
+
+.logo-item:hover {
+  transform: translateY(-8px) scale(1.1);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  border-color: #4a6bff;
+  z-index: 10;
+}
+
+.logo-item:hover .logo-svg {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 8px rgba(74, 107, 255, 0.6));
+}
+
+.logo-item:nth-child(1):hover {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-color: #764ba2;
+}
+
+.logo-item:nth-child(2):hover {
+  background: linear-gradient(135deg, #f093fb, #f5576c);
+  border-color: #f5576c;
+}
+
+.logo-item:nth-child(3):hover {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  border-color: #00f2fe;
+}
+
+.logo-item:nth-child(4):hover {
+  background: linear-gradient(135deg, #43e97b, #38f9d7);
+  border-color: #38f9d7;
+}
+
+.logo-svg {
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.logo-item:hover .logo-svg {
+  filter: 
+    drop-shadow(0 0 8px rgba(255, 255, 255, 0.8))
+    brightness(1.2)
+    saturate(1.2);
+}
+
+.primary-btn, .secondary-btn {
+  min-width: 220px;
+  padding: 12px 24px;
+  margin: 10px 0;
+  border-radius: 8px;
+  border: 2px solid transparent;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.primary-btn {
+  background-color: #4a6bff;
+  color: white;
+  border-color: #3a5bff;
+}
+
+.primary-btn:hover {
+  background-color: #3a5bff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 107, 255, 0.3);
+}
+
+.secondary-btn {
+  background-color: #ffffff;
+  color: #4a6bff;
+  border: 2px solid #4a6bff;
+}
+
+.secondary-btn:hover:not(:disabled) {
+  background-color: #f0f4ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(74, 107, 255, 0.2);
+}
+
+/* 禁用状态样式 */
+.secondary-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #e0e0e0;
+  border-color: #b0b0b0;
+  color: #888;
+  transform: none;
+  box-shadow: none;
+}
+
+.secondary-btn:disabled:hover {
+  background-color: #e0e0e0;
+  transform: none;
+  box-shadow: none;
+}
+
+.result-text {
+  font-size: 18px;
+  font-weight: 500;
+  color: #2c3e50;
+  margin: 20px 0;
+  min-height: 30px;
+  padding: 8px 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 6px;
+  border-left: 4px solid #4a6bff;
+  transition: all 0.3s ease;
+}
+
+.result-text.ready {
+  background-color: rgba(144, 238, 144, 0.2);
+  border-left-color: #28a745;
+  color: #155724;
+}
+
+/* GitHub按钮样式 */
+.github-btn {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  opacity: 0.5;
+  z-index: 100;
+  padding: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.github-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  border-color: rgba(0, 0, 0, 0.3);
+}
+
+.github-btn img {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  transition: filter 0.3s ease;
+}
+
+.github-btn:hover img {
+  filter: drop-shadow(0 0 4px rgba(0, 0, 0, 0.4)) brightness(1.1);
+}
+
+/* 静音按钮样式 */
+.mute-btn {
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(74, 107, 255, 0.2);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+  opacity: 0.5;
+  z-index: 100;
+  padding: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mute-btn:hover {
+  opacity: 1;
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.8);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.mute-btn.active {
+  opacity: 1;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(255, 0, 0, 0.5);
+}
+
+.mute-btn img {
+  width: 24px;
+  height: 24px;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+  transition: filter 0.3s ease;
+}
+
+.mute-btn.active img {
+  filter: drop-shadow(0 0 4px rgba(255, 0, 0, 0.6)) brightness(0.8);
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color: #f6f6f6;
+    background-color: #2f2f2f;
+  }
+  
+  .container {
+    background-color: rgba(30, 30, 30, 0.85);
+  }
+  
+  .logo-container {
+    background-color: rgba(40, 40, 40, 0.7);
+  }
+  
+  .logo-item {
+    background-color: #2d2d2d;
+  }
+  
+  .result-text {
+    background-color: rgba(40, 40, 40, 0.9);
+    color: #e0e0e0;
+  }
+  
+  .result-text.ready {
+    background-color: rgba(40, 167, 69, 0.2);
+    color: #d4edda;
+  }
+  
+  .secondary-btn {
+    background-color: #333333;
+    color: #4a6bff;
+    border-color: #4a6bff;
+  }
+  
+  .secondary-btn:hover:not(:disabled) {
+    background-color: #3a3a3a;
+  }
+  
+  .secondary-btn:disabled {
+    background-color: #2a2a2a;
+    border-color: #555;
+    color: #777;
+  }
+  
+  .secondary-btn:disabled:hover {
+    background-color: #2a2a2a;
+  }
+  
+  .logo-item:hover {
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+  }
+  
+  .github-btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .github-btn:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .mute-btn {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+  
+  .mute-btn:hover {
+    background-color: rgba(0, 0, 0, 0.7);
+  }
+  
+  .mute-btn.active {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+}
+
+/* 浏览器网格样式 */
+.browsers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 20px;
+  padding: 20px;
+  overflow-y: auto;
+  max-height: 500px;
+}
+
+.browser-card {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.browser-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.browser-icon {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-bottom: 15px;
+  border-radius: 8px;
+}
+
+.browser-name {
+  margin: 0 0 10px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #2c3e50;
+  text-align: center;
+}
+
+.browser-type, .browser-size {
+  margin: 5px 0;
+  font-size: 14px;
+  color: #546e7a;
+  text-align: center;
+}
+
+.analysis-title {
+  color: white;
+  text-align: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.grid-description {
+  color: white;
+  text-align: center;
+  margin: 10px 0;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 深色模式适配 */
+@media (prefers-color-scheme: dark) {
+  .browser-card {
+    background-color: rgba(40, 40, 40, 0.9);
+  }
+  
+  .browser-name {
+    color: #e0e0e0;
+  }
+  
+  .browser-type, .browser-size {
+    color: #b0bec5;
+  }
+  
+  .analysis-title, .grid-description {
+    color: #f0f0f0;
+  }
+}

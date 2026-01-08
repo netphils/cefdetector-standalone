@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="cn">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="styles.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>浏览器检测工具</title>
+    <script type="module" src="/main.js" defer></script>
+  </head>
+
+  <body>
+    <main class="container">
+      <!-- 四个logo并排显示 -->
+      <div class="logo-container">
+        <div class="logo-item">
+          <img src="./assets/chromium.svg" class="logo-svg" alt="Logo 1" />
+        </div>
+        <div class="logo-item">
+          <img src="./assets/electron.svg" class="logo-svg" alt="Logo 2" />
+        </div>
+        <div class="logo-item">
+          <img src="./assets/cef.svg" class="logo-svg" alt="Logo 3" />
+        </div>
+        <div class="logo-item">
+          <img src="./assets/chrome.svg" class="logo-svg" alt="Logo 4" />
+        </div>
+      </div>
+      
+      <!-- 统计按钮 -->
+      <button id="count-btn" class="primary-btn">统计已安装的应用</button>
+      
+      <!-- 显示结果 -->
+      <p id="app-count" class="result-text">请先统计已安装的应用</p>
+      
+      <!-- 分析按钮（初始为禁用状态） -->
+      <button id="analyze-btn" class="secondary-btn" disabled>点击分析已安装的应用</button>
+      
+      <!-- 仓库按钮 -->
+      <button id="github-btn" class="github-btn" title="访问GitHub">
+        <img src="./assets/github.svg" alt="GitHub" />
+      </button>
+      
+      <!-- 背景音乐元素 -->
+      <audio id="bgm" loop preload="auto">
+        <source src="./assets/bgm.opus" type="audio/ogg; codecs=opus">
+        您的浏览器不支持音频元素
+      </audio>
+      
+      <!-- 静音按钮 -->
+      <button id="mute-btn" class="mute-btn" title="静音/取消静音">
+        <img src="./assets/mute.svg" alt="静音" />
+      </button>
+    </main>
+  </body>
+</html>
