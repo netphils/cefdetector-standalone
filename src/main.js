@@ -184,6 +184,12 @@ async function analyzeApps() {
     
     // 添加到容器
     const container = document.querySelector('.container');
+    container.appendChild(document.createElement('br'));
+    container.appendChild(document.createElement('br'));
+    container.appendChild(document.createElement('br'));
+    container.appendChild(document.createElement('br'));
+    container.appendChild(document.createElement('br'));
+    container.appendChild(document.createElement('br'));
     container.appendChild(title);
     container.appendChild(description);
     container.appendChild(gridContainer);
