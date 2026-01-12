@@ -63,19 +63,12 @@ fn is_browser_application(install_location: &str) -> bool {
     
     // 检查是否存在浏览器相关的特征文件
     let browser_patterns = vec![
-        "libcef", "cef", "libcef.dll", "cef.dll",         // libcef相关
-        "electron", "electron.exe",                       // Electron相关
-        "nwjs", "nw.exe", "nwjc.exe",                     // NWJS相关
-        "CefSharp", "CefSharp.dll",                       // CefSharp相关
-        "miniblink", "node.dll", "miniblink.dll",         // MiniBlink相关
-        "chrome", "chromium",                             // Chrome/Chromium核心
-        "WebKit", "webkit",                               // WebKit核心
-        "tauri",                                          // Tauri相关
-        "pywebview",                                      // pywebview相关
-        "wails",                                          // Wails相关
-        "webview",                                        // 通用webview
-        "webview2",                                       // WebView2相关
-        "webviewhost",                                    // WebView2宿主
+        "libcef", "libcef.dll", "cef.dll", "cef.pak",               // libcef相关
+        "electron", "electron.exe", "electron.asar", "app.asar",    // Electron相关
+        "nwjs", "nw.exe", "nwjc.exe",                               // NWJS相关
+        "CefSharp.BrowserSubprocess.exe", "CefSharp.dll",           // CefSharp相关
+        "miniblink", "node.dll", "miniblink.dll",                   // MiniBlink相关
+        "chrome", "chromium"                                       // Chrome/Chromium核心
     ];
     
     // 遍历目录查找特征文件
@@ -142,18 +135,6 @@ fn detect_browser_type(install_location: &str) -> String {
                 return String::from("Edge");
             } else if file_name.contains("firefox.exe") {
                 return String::from("Firefox");
-            } else if file_name.contains("tauri") {
-                return String::from("Tauri");
-            } else if file_name.contains("pywebview") {
-                return String::from("PyWebView");
-            } else if file_name.contains("wails") {
-                return String::from("Wails");
-            } else if file_name.contains("webview") {
-                return String::from("WebView");
-            } else if file_name.contains("webview2") {
-                return String::from("WebView2");
-            } else if file_name.contains("webviewhost") {
-                return String::from("WebView2 Host");
             }
         }
     }
