@@ -8,17 +8,33 @@ fn search_installed() -> usize {
     apps.len()
 }
 
+#[derive(Clone, serde::Serialize)]
+#[serde(rename_all = "camelCase")]
+struct BrowserSummary {
+    size: u64,
+    count: usize,
+}
+
 #[tauri::command]
-async fn search_browsers(app_handle: tauri::AppHandle) -> usize {
+async fn search_browsers(app_handle: tauri::AppHandle) -> BrowserSummary {
     let apps = get_installed_apps();
 
     let browsers = detect_browser_apps(apps, app_handle);
 
-    let count = browsers
+    let count: usize = browsers
     .iter()
     .filter(|info| info.is_browser)
     .count();
-    count
+
+    let total_size: u64 = browsers.iter()
+    .filter(|browser| browser.is_browser)
+    .map(|browser| browser.size)
+    .sum();
+
+    BrowserSummary {
+        size: total_size,
+        count: count
+    }
 }
 
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/

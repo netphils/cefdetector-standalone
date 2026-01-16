@@ -81,13 +81,14 @@ function createBrowserCard(browserInfo) {
   return card;
 }
 
-// 格式化大小显示
 function formatSize(bytes) {
   if (bytes === 0) return '0 B';
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  
+  const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(1024));
+  const value = bytes / Math.pow(1024, i);
+  
+  return `${value.toFixed(2)} ${units[i]}`;
 }
 
 // 设置事件监听
@@ -199,12 +200,14 @@ async function analyzeApps() {
     
     // 调用Rust函数
     console.log("开始分析浏览器...");
-    const browser_count = await invoke("search_browsers");
-    console.log(`发现 ${browser_count} 个浏览器`);
+    const browser_summary = await invoke("search_browsers");
+    const browser_count = browser_summary.count;
+    const browser_size = browser_summary.size;
+    console.log(`发现 ${browser_count} 个浏览器，总大小${formatSize(browser_size)}。（大小包含整个程序）`);
     
     // 更新描述
     if (browser_count > 0) {
-      description.textContent = `已发现 ${browser_count} 个浏览器，详细信息：`;
+      description.textContent = `已发现 ${browser_count} 个浏览器。详细信息：`;
     } else {
       description.textContent = '未发现浏览器';
     }
@@ -331,92 +334,6 @@ window.addEventListener("DOMContentLoaded", () => {
       0% { transform: scale(1); }
       50% { transform: scale(1.05); }
       100% { transform: scale(1); }
-    }
-    
-    /* 浏览器网格样式 */
-    .browsers-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-      gap: 20px;
-      width: 100%;
-      max-width: 1200px;
-      margin-top: 20px;
-      padding: 20px;
-      overflow-y: auto;
-      max-height: 500px;
-    }
-    
-    .browser-card {
-      background-color: rgba(255, 255, 255, 0.9);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      transition: all 0.3s ease;
-    }
-    
-    .browser-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-    }
-    
-    .browser-icon {
-      width: 64px;
-      height: 64px;
-      object-fit: contain;
-      margin-bottom: 15px;
-      border-radius: 8px;
-    }
-    
-    .browser-name {
-      margin: 0 0 10px 0;
-      font-size: 18px;
-      font-weight: 600;
-      color: #2c3e50;
-      text-align: center;
-    }
-    
-    .browser-type, .browser-size {
-      margin: 5px 0;
-      font-size: 14px;
-      color: #546e7a;
-      text-align: center;
-    }
-    
-    .analysis-title {
-      color: white;
-      text-align: center;
-      margin-top: 20px;
-      margin-bottom: 10px;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
-    
-    .grid-description {
-      color: white;
-      text-align: center;
-      margin: 10px 0;
-      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-    }
-    
-    /* 深色模式适配 */
-    @media (prefers-color-scheme: dark) {
-      .browser-card {
-        background-color: rgba(40, 40, 40, 0.9);
-      }
-      
-      .browser-name {
-        color: #e0e0e0;
-      }
-      
-      .browser-type, .browser-size {
-        color: #b0bec5;
-      }
-      
-      .analysis-title, .grid-description {
-        color: #f0f0f0;
-      }
     }
   `;
   document.head.appendChild(style);
