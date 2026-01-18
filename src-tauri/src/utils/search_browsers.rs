@@ -5,6 +5,8 @@ use std::path::Path;
 use walkdir::WalkDir;
 use tauri::Error;
 
+use std::collections::HashMap;
+
 use windows_icons::get_icon_base64_by_path;
 
 use crate::utils::common::*;
@@ -22,16 +24,26 @@ struct FrontendBrowserInfo {
 
 // 同步函数，验证应用是否为浏览器并计算大小
 pub fn detect_browser_apps(mut apps: Vec<BrowserInfo>, app_handle: AppHandle) -> Vec<BrowserInfo> {
+
+    let browser_pattern_map: HashMap<&str, Vec<&str>> = HashMap::from([
+        ("libCEF", vec!["libcef", "libcef.dll", "cef.dll", "cef.pak"]),
+        ("Electron", vec!["electron.exe", "electron.asar", "app.asar", "resources.pak"]),
+        ("NW.js", vec!["nwjs", "nw.exe", "nwjc.exe"]),
+        ("CEFSharp", vec!["CefSharp.BrowserSubprocess.exe", "CefSharp.dll"]),
+        ("miniblink", vec!["miniblink", "node.dll", "miniblink.dll"]),
+        ("Chrome", vec!["chrome", "chromium"])
+    ]);
+
     for app in apps.iter_mut() {
         // 检查是否为浏览器应用
-        app.is_browser = is_browser_application(&app.install_location);
+        app.is_browser = is_browser_application(&app.install_location, &browser_pattern_map);
         
         if app.is_browser {
             // 计算安装文件夹大小
             app.size = calculate_folder_size(&app.install_location);
             
             // 检测浏览器类型
-            let browser_type = detect_browser_type(&app.install_location);
+            let browser_type = detect_browser_type(&app.install_location, &browser_pattern_map);
             
             // 尝试读取图标 base64
             let browser_icon: String = get_icon_base64(&app.display_icon).unwrap_or(ERROR_IMAGE.to_string());
@@ -55,21 +67,11 @@ pub fn detect_browser_apps(mut apps: Vec<BrowserInfo>, app_handle: AppHandle) ->
 }
 
 // 检查是否为浏览器应用
-fn is_browser_application(install_location: &str) -> bool {
+fn is_browser_application(install_location: &str, browser_pattern_map: &HashMap<&str, Vec<&str>>) -> bool {
     let path = Path::new(install_location);
     if !path.exists() || !path.is_dir() {
         return false;
     }
-    
-    // 检查是否存在浏览器相关的特征文件
-    let browser_patterns = vec![
-        "libcef", "libcef.dll", "cef.dll", "cef.pak",               // libcef相关
-        "electron", "electron.exe", "electron.asar", "app.asar",    // Electron相关
-        "nwjs", "nw.exe", "nwjc.exe",                               // NWJS相关
-        "CefSharp.BrowserSubprocess.exe", "CefSharp.dll",           // CefSharp相关
-        "miniblink", "node.dll", "miniblink.dll",                   // MiniBlink相关
-        "chrome", "chromium"                                       // Chrome/Chromium核心
-    ];
     
     // 遍历目录查找特征文件
     for entry in WalkDir::new(path)
@@ -82,10 +84,8 @@ fn is_browser_application(install_location: &str) -> bool {
             let file_name = entry.file_name().to_string_lossy().to_lowercase();
             
             // 检查文件名是否包含浏览器特征
-            for pattern in &browser_patterns {
-                if file_name.contains(&pattern.to_lowercase()) {
-                    return true;
-                }
+            if browser_pattern_map.values().flatten().any(|&pattern| file_name.contains(pattern)) {
+                return true;
             }
             
             // 检查文件扩展名
@@ -103,7 +103,7 @@ fn is_browser_application(install_location: &str) -> bool {
 }
 
 // 检测浏览器类型
-fn detect_browser_type(install_location: &str) -> String {
+fn detect_browser_type(install_location: &str, browser_pattern_map: &HashMap<&str, Vec<&str>>) -> String {
     let path: &Path = Path::new(install_location);
     if !path.exists() {
         return String::from("未知");
@@ -119,22 +119,12 @@ fn detect_browser_type(install_location: &str) -> String {
         if entry.file_type().is_file() {
             let file_name = entry.file_name().to_string_lossy().to_lowercase();
             
-            if file_name.contains("libcef.dll") || file_name.contains("cef.dll") {
-                return String::from("libcef");
-            } else if file_name.contains("electron.exe") || file_name.contains("electron.asar") || file_name.contains("apps.asar") {
-                return String::from("Electron");
-            } else if file_name.contains("nw.exe") || file_name.contains("nwjs") {
-                return String::from("NWJS");
-            } else if file_name.contains("cefsharp.dll") {
-                return String::from("CefSharp");
-            } else if file_name.contains("miniblink.dll") || file_name.contains("node.dll") {
-                return String::from("MiniBlink");
-            } else if file_name.contains("chrome.exe") || file_name.contains("chromium") {
-                return String::from("Chrome/Chromium");
-            } else if file_name.contains("msedge.exe") {
-                return String::from("Edge");
-            } else if file_name.contains("firefox.exe") {
-                return String::from("Firefox");
+            for (key, patterns) in browser_pattern_map {
+                for pattern in patterns {
+                    if file_name.contains(pattern) {
+                        return key.to_string();
+                    }
+                }
             }
         }
     }
