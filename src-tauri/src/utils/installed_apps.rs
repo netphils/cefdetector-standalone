@@ -19,8 +19,21 @@ pub fn get_installed_apps() -> Vec<BrowserInfo> {
                 if let Ok(subkey) = hkey.open_subkey(&subkey_name) {
                     if let Ok(display_name) = subkey.get_value::<String, _>("DisplayName") {
                         // 获取安装路径
-                        let install_location = subkey.get_value::<String, _>("InstallLocation")
-                            .unwrap_or_default();
+                        let install_location = match subkey.get_value::<String, _>("InstallLocation") {
+                            Ok(v) => v,
+                            Err(_) => {
+                                match subkey.get_value::<String, _>("ExecutablePath") {
+                                    Ok(v) => {
+                                        Path::new(&v).parent().map_or_else(
+                                            || "".to_string(),
+                                            |p| p.to_str().unwrap_or("").to_string()
+                                        )
+                                    },
+                                    Err(_) => {"".to_string()}
+                                }
+                            }
+                        };
+
                             
                         // 获取显示图标
                         let display_icon = subkey.get_value::<String, _>("DisplayIcon")

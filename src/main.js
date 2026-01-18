@@ -207,7 +207,7 @@ async function analyzeApps() {
     
     // 更新描述
     if (browser_count > 0) {
-      description.textContent = `已发现 ${browser_count} 个浏览器。详细信息：`;
+      description.textContent = `在已安装的应用程序中，发现了 ${browser_count} 个浏览器。详细信息：`;
     } else {
       description.textContent = '未发现浏览器';
     }

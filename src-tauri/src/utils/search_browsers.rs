@@ -11,6 +11,7 @@ use windows_icons::get_icon_base64_by_path;
 
 use crate::utils::common::*;
 
+const SCAN_DEPTH: (usize, usize) = (1, 5);
 const ERROR_IMAGE : &str = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAACXBIWXMAAAsTAAALEwEAmpwYAAADm0lEQVR4nO2bPWgUQRSAv0TQ/GACIoiVgprS0kpQwcr4g/EHlVzAQlQEyanxF8KBojaKjYSLSUBFGwtBsQrBJkRLGwVjooU2WiQRRYmiJwOz4WVudm8v3mb3NvPgwTJvZ96+b3dm583OQrE0AruAU8C5lGgW2Ak0ECA1QBcwBRRSqpPAaR3rLKkFHibgAudLH5gQuowTxoA8cD0lmtcxyRhVF5/p8/KxvwMsIX2iYuo3ukMDenDwCt+lNHhPVGzjIt7tqvCMKOgh/ZI3u0FOFKhjc3DMiNdJRpeFtSdRiuLNBQDosIygmTLsVQ8gYwmwvQx71QOo1QF5r5N2SxcIslc9gDSKA4ADgC+AwQRkblHrYBCAwgLTnAPAbADDCcjcotbhIAA50i/uLYADgAOAA4AD4J4AHICctSDlEimARuA2MAA0B5zXAlwFnmpVx+vm4K8VeAzsTgqAHtFWp885F4Hflnm5Kjtfhq9VwE9dV33XiB1AixGYra0TIRKUoyH93TXqxQ7gkS3TEqK6xFdhHwEOAAeBF8YXm6YSvtYDf5IEYAPwtwSA/cL2FqgTNnU8Kuz7Svh7ZnlyYgXw3C/XFnJB2G5Y2rgp7EFjwSafrhMbgG1Biw1Bjsu0ezKSJAC1wCtRfzpiAHt8fMUGoEPU/QH0RQhgEfBGnHMrbgCLjU/N10q09b8Ajgn7N2BF3ACyot4EsCxCAPXAR2Hv1uWxAVgKfBb11B4DIgRwSdi+aP+xArgi6nwS28+iALDc2MKjZpPECWAl8F3UORwyyLkCkPOD93rsiRVApzj/tR6dowQg776aNhM3gJw4/4P+1ubpuDHdbasAABnkkOFP2gZC5BAVAdBtOA5S9XawTYXVYx12KmzmGEF6cj4AbPHJ522q7pItGRo1kqF6vUXPs+8VtqGQvtQ1bZ4PAEpWA1stek+0lTcGrGajP6sU+JDWl8ZT02Ts7dvo408CUNcU63pAmLaOh7iTRwgvsQyCYWeHfktiZ4FflsCnxYQqrEyJRZREAGjW+3H7SozIa/Vk6onWy8CaOfhr04uqiVkUrQZxAHAAcABwAHAA3BOAA5BD/0cn5+9pl14Rb1YV7BAFYyn/aapOryp58bai1/MmRWF/SiHU6UUTmXXWe0bZDQp6ZSefgJ3dldJe484XJWs1+nfSwgLR+7b/h2v0f3SyO6RNJ/SdLwoeIWpMUAOjGiHj3tldKVWxqL9EZ/q8J/8AgrX3iTePfdwAAAAASUVORK5CYII=";
 
 #[derive(Clone, Serialize)]
@@ -26,12 +27,13 @@ struct FrontendBrowserInfo {
 pub fn detect_browser_apps(mut apps: Vec<BrowserInfo>, app_handle: AppHandle) -> Vec<BrowserInfo> {
 
     let browser_pattern_map: HashMap<&str, Vec<&str>> = HashMap::from([
-        ("libCEF", vec!["libcef", "libcef.dll", "cef.dll", "cef.pak"]),
-        ("Electron", vec!["electron.exe", "electron.asar", "app.asar", "resources.pak"]),
-        ("NW.js", vec!["nwjs", "nw.exe", "nwjc.exe"]),
-        ("CEFSharp", vec!["CefSharp.BrowserSubprocess.exe", "CefSharp.dll"]),
+        ("libCEF", vec!["libcef.dll", "cef.dll", "cef.pak", "cef_extensions.pak"]),
+        ("Electron", vec!["electron.exe", ".asar", "resources.pak"]),
+        ("NW.js", vec!["nwjs", "nw.exe", "nwjc.exe", ".node"]),
+        ("Node.js", vec!["node.dll"]),
+        ("CEFSharp", vec!["CefSharp.BrowserSubprocess.exe", "CefSharp.dll", "cef.pak"]),
         ("miniblink", vec!["miniblink", "node.dll", "miniblink.dll"]),
-        ("Chrome", vec!["chrome", "chromium"])
+        ("Chrome", vec!["chrome", "chromium", "chrome_elf.dll", "icudtl.dat", "chrome_100_percent.pak", "chrome_200_percent.pak"])
     ]);
 
     for app in apps.iter_mut() {
@@ -75,8 +77,8 @@ fn is_browser_application(install_location: &str, browser_pattern_map: &HashMap<
     
     // 遍历目录查找特征文件
     for entry in WalkDir::new(path)
-        .min_depth(1)
-        .max_depth(3)
+        .min_depth(SCAN_DEPTH.0)
+        .max_depth(SCAN_DEPTH.1)
         .into_iter()
         .filter_map(|e| e.ok())
     {
@@ -86,15 +88,6 @@ fn is_browser_application(install_location: &str, browser_pattern_map: &HashMap<
             // 检查文件名是否包含浏览器特征
             if browser_pattern_map.values().flatten().any(|&pattern| file_name.contains(pattern)) {
                 return true;
-            }
-            
-            // 检查文件扩展名
-            if let Some(ext) = entry.path().extension() {
-                let ext_str = ext.to_string_lossy().to_lowercase();
-                if ext_str == "asar" || ext_str == "pak" || ext_str == "dat" {
-                    // 常见浏览器资源文件扩展名
-                    return true;
-                }
             }
         }
     }
@@ -111,8 +104,8 @@ fn detect_browser_type(install_location: &str, browser_pattern_map: &HashMap<&st
     
     // 遍历文件查找特定特征
     for entry in WalkDir::new(path)
-        .min_depth(1)
-        .max_depth(2)
+        .min_depth(SCAN_DEPTH.0)
+        .max_depth(SCAN_DEPTH.1)
         .into_iter()
         .filter_map(|e| e.ok())
     {
