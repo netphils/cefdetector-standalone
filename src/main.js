@@ -13,14 +13,16 @@ let isMusicPlaying = false;
 let isAnalyzeEnabled = false; // 标记分析按钮是否可用
 let cleanupDetectionStarted = null; // 保存事件监听清理函数
 
+let totalApps = -1;
+
 async function searchinstalled() {
   try {
     // 禁用统计按钮，防止重复点击
     countBtn.disabled = true;
     countBtn.textContent = "统计中...";
     
-    const count = await invoke("search_installed");
-    appCountEl.textContent = `已发现 ${count} 个应用`;
+    totalApps = await invoke("search_installed");
+    appCountEl.textContent = `已发现 ${totalApps} 个应用`;
     
     // 添加成功状态样式
     appCountEl.classList.add('ready');
@@ -207,7 +209,7 @@ async function analyzeApps() {
     
     // 更新描述
     if (browser_count > 0) {
-      description.textContent = `在已安装的应用程序中，发现了 ${browser_count} 个浏览器。详细信息：`;
+      description.textContent = `在已安装的应用程序中，发现了 ${browser_count} 个浏览器，占比达 ${((browser_count / totalApps) * 100).toFixed(2)}%。详细信息：`;
     } else {
       description.textContent = '未发现浏览器';
     }
