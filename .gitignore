@@ -47,3 +47,9 @@ dist-ssr
 .env
 .env.*
 !.env.example
+
+# OpenCode
+.opencode/
+.opencode.json
+.opencode.jsonc
+AGENTS.md
