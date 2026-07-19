@@ -50,5 +50,5 @@ dist-ssr
 
 # OpenCode
 .opencode/
-.opencode.json
-.opencode.jsonc
+opencode.json
+opencode.jsonc
