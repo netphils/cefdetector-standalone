@@ -22,10 +22,12 @@ const UNINSTALL_KEYS: &[&str] = &[
     "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
 ];
 
-const BROWSER_MATCH: &[(&str, &[&str])] = &[
-    ("Electron", &["electron.exe", "app.asar"]),
-    ("CEF", &["libcef.dll"]),
+// Ordered by priority (lower index = higher priority)
+const BROWSER_MATCH: &[(usize, &str, &[&str])] = &[
+    (0, "Electron", &["electron.exe", "app.asar"]),
+    (1, "CEF", &["libcef.dll"]),
     (
+        2,
         "CEF/Electron",
         &[
             "node.dll",
@@ -104,18 +106,23 @@ fn install_dir(values: &HashMap<String, String>) -> Option<PathBuf> {
 }
 
 fn matches_browser(dir: &Path) -> Option<&'static str> {
+    let mut best: Option<(usize, &'static str)> = None;
     for entry in WalkDir::new(dir).into_iter().filter_map(|r| r.ok()) {
         let file_name = match entry.file_name().to_str() {
             Some(n) => n.to_lowercase(),
             None => continue,
         };
-        for (browser_type, patterns) in BROWSER_MATCH {
-            if patterns.iter().any(|p| p.to_lowercase() == file_name) {
-                return Some(browser_type);
+        for (priority, app_type, patterns) in BROWSER_MATCH {
+            let matched = patterns.iter().any(|p| p.to_lowercase() == file_name);
+            if matched {
+                match best {
+                    Some((p, _)) if p <= *priority => {}
+                    _ => best = Some((*priority, app_type)),
+                }
             }
         }
     }
-    None
+    best.map(|(_, t)| t)
 }
 
 fn dir_size(dir: &Path) -> u64 {
