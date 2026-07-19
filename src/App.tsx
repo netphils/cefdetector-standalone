@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import browserIcon from "./assets/browser-chrome-google-svgrepo-com.svg";
 import RepoBadge from "./RepoBadge";
 import ResultsPage from "./ResultsPage";
+import AudioControl from "./AudioControl";
 import "./App.css";
 
 const ICON_COUNT = 10;
@@ -109,6 +110,7 @@ function App() {
       )}
 
       <RepoBadge />
+      <AudioControl playing={started} />
     </>
   );
 }
