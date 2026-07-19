@@ -14,6 +14,7 @@ type AppEntry = {
 
 export default function ResultsPage() {
   const [entries, setEntries] = useState<AppEntry[]>([]);
+  const [totalSize, setTotalSize] = useState<string>("");
 
   useEffect(() => {
     let unlisten: (() => void) | undefined;
@@ -27,7 +28,12 @@ export default function ResultsPage() {
         unlisten();
         return;
       }
-      await invoke("scan_apps", { params: {} });
+      const result = (await invoke("scan_apps", {
+        params: {},
+      })) as Record<string, string>;
+      if (!cancelled) {
+        setTotalSize(result.size ?? "");
+      }
     };
     start();
 
@@ -44,7 +50,8 @@ export default function ResultsPage() {
     >
       <div className="results-top">
         <h2 className="results-header">
-          恭喜你，已找到 {entries.length} 个浏览器应用
+          恭喜你，这台电脑上总共有 {entries.length} 个 Chromium 内核的应用
+          {totalSize && `（共 ${totalSize}）`}
         </h2>
       </div>
 

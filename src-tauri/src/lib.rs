@@ -153,8 +153,9 @@ fn icon_base64(values: &HashMap<String, String>) -> String {
 async fn scan_apps(
     app: tauri::AppHandle,
     _params: HashMap<String, String>,
-) -> Option<()> {
+) -> HashMap<String, String> {
     let apps = read_uninstall_entries();
+    let mut total_bytes: u64 = 0;
 
     for values in apps.values() {
         if !values.contains_key("DisplayName")
@@ -184,6 +185,7 @@ async fn scan_apps(
         };
 
         let size_bytes = dir_size(&dir);
+        total_bytes += size_bytes;
         let size = humansize::format_size(size_bytes, humansize::BINARY);
 
         let icon = icon_base64(values);
@@ -199,7 +201,12 @@ async fn scan_apps(
         tokio::time::sleep(std::time::Duration::from_millis(300)).await;
     }
 
-    None
+    let mut result = HashMap::new();
+    result.insert(
+        "size".to_string(),
+        humansize::format_size(total_bytes, humansize::BINARY),
+    );
+    result
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
