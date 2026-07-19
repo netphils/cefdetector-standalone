@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
+import background from "./assets/background.png";
 import "./ResultsPage.css";
 
 type AppEntry = {
@@ -36,10 +37,15 @@ export default function ResultsPage() {
   }, []);
 
   return (
-    <div className="results">
-      <h2 className="results-header">
-        恭喜你，已找到 {entries.length} 个浏览器应用
-      </h2>
+    <div
+      className="results"
+      style={{ backgroundImage: `url(${background})` }}
+    >
+      <div className="results-top">
+        <h2 className="results-header">
+          恭喜你，已找到 {entries.length} 个浏览器应用
+        </h2>
+      </div>
 
       <div className="results-grid">
         {entries.map((entry, i) => (
