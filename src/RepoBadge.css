@@ -1,0 +1,100 @@
+.repo-badge {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 1000;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.repo-badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.28);
+}
+
+.repo-badge img {
+  width: 24px;
+  height: 24px;
+  pointer-events: none;
+}
+
+.repo-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1001;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.repo-modal {
+  width: min(420px, 90vw);
+  padding: 24px;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  text-align: center;
+}
+
+.repo-modal-title {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #0f0f0f;
+}
+
+.repo-modal-link {
+  word-break: break-all;
+  color: #396cd8;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.repo-modal-link:hover {
+  text-decoration: underline;
+}
+
+.repo-modal-close {
+  align-self: center;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6em 1.6em;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: inherit;
+  color: #ffffff;
+  background: linear-gradient(135deg, #4f8cff, #396cd8);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.repo-modal-close:hover {
+  transform: translateY(-1px);
+}
+
+@media (prefers-color-scheme: dark) {
+  .repo-badge {
+    background: rgba(40, 40, 40, 0.9);
+  }
+
+  .repo-modal {
+    background: #2a2a2a;
+  }
+
+  .repo-modal-title {
+    color: #f6f6f6;
+  }
+}

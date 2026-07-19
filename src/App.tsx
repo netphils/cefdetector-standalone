@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import browserIcon from "./assets/browser-chrome-google-svgrepo-com.svg";
+import RepoBadge from "./RepoBadge";
 import "./App.css";
 
 const ICON_COUNT = 10;
@@ -96,6 +97,8 @@ function App() {
           开始检测
         </button>
       </div>
+
+      <RepoBadge />
     </div>
   );
 }
