@@ -7,8 +7,3 @@
 
 ## 截图
 <img width="1002" height="789" alt="屏幕截图 2026-07-19 202256" src="https://github.com/user-attachments/assets/44d177c4-3045-427b-961b-d7f1c2749d78" />
-
-## 图标
-[404](https://icons8.com/icon/PLJWnvM1vQLJ/page-not-found) icon by [Icons8](https://icons8.com)
-
-[Magnifying glass icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/magnifying-glass "magnifying glass icons")
