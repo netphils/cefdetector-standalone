@@ -105,8 +105,9 @@ fn install_dir(values: &HashMap<String, String>) -> Option<PathBuf> {
     None
 }
 
-fn matches_browser(dir: &Path) -> Option<&'static str> {
+fn matches_browser(dir: &Path) -> Option<(&'static str, u64)> {
     let mut best: Option<(usize, &'static str)> = None;
+    let mut matched_size: u64 = 0;
     for entry in WalkDir::new(dir).into_iter().filter_map(|r| r.ok()) {
         let file_name = match entry.file_name().to_str() {
             Some(n) => n.to_lowercase(),
@@ -115,6 +116,9 @@ fn matches_browser(dir: &Path) -> Option<&'static str> {
         for (priority, app_type, patterns) in BROWSER_MATCH {
             let matched = patterns.iter().any(|p| p.to_lowercase() == file_name);
             if matched {
+                if let Ok(meta) = entry.metadata() {
+                    matched_size += meta.len();
+                }
                 match best {
                     Some((p, _)) if p <= *priority => {}
                     _ => best = Some((*priority, app_type)),
@@ -122,7 +126,7 @@ fn matches_browser(dir: &Path) -> Option<&'static str> {
             }
         }
     }
-    best.map(|(_, t)| t)
+    best.map(|(_, t)| (t, matched_size))
 }
 
 fn dir_size(dir: &Path) -> u64 {
@@ -179,13 +183,13 @@ async fn scan_apps(
             continue;
         }
 
-        let browser_type = match matches_browser(&dir) {
-            Some(t) => t.to_string(),
+        let (browser_type, matched_size) = match matches_browser(&dir) {
+            Some((t, s)) => (t.to_string(), s),
             None => continue,
         };
 
         let size_bytes = dir_size(&dir);
-        total_bytes += size_bytes;
+        total_bytes += matched_size;
         let size = humansize::format_size(size_bytes, humansize::BINARY);
 
         let icon = icon_base64(values);
