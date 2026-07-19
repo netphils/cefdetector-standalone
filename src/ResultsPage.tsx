@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
 import background from "./assets/background.png";
+import noImage from "./assets/no-image-svgrepo-com.svg";
 import "./ResultsPage.css";
 
 type AppEntry = {
@@ -52,7 +53,7 @@ export default function ResultsPage() {
           <div className="result-card" key={i}>
             <img
               className="result-icon"
-              src={`data:image/png;base64,${entry.icon}`}
+              src={entry.icon ? `data:image/png;base64,${entry.icon}` : noImage}
               alt=""
             />
             <div className="result-name">{entry.name}</div>

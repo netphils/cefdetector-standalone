@@ -139,7 +139,7 @@ fn icon_base64(values: &HashMap<String, String>) -> String {
             }
         }
     }
-    "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M8AAAMBAQDJ/pLvAAAAAElFTkSuQmCC".to_string()
+    String::new()
 }
 
 #[tauri::command]
