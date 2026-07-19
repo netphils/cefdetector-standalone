@@ -23,11 +23,12 @@ const UNINSTALL_KEYS: &[&str] = &[
 ];
 
 const BROWSER_MATCH: &[(&str, &[&str])] = &[
-    ("Electron", &["electron.exe", "app.asar", "node.dll"]),
+    ("Electron", &["electron.exe", "app.asar"]),
+    ("CEF", &["libcef.dll"]),
     (
-        "CEF",
+        "CEF/Electron",
         &[
-            "libcef.dll",
+            "node.dll",
             "chrome_100_percent.pak",
             "chrome_200_percent.pak",
             "resources.pak",
