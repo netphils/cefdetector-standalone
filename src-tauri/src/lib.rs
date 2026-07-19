@@ -18,6 +18,22 @@ const UNINSTALL_KEYS: &[&str] = &[
     "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
 ];
 
+const BROWSER_MATCH: &[(&str, &[&str])] = &[
+    (
+        "Electron",
+        &["electron.exe", "app.asar", "node.dll"],
+    ),
+    (
+        "CEF",
+        &[
+            "libcef.dll",
+            "chrome_100_percent.pak",
+            "chrome_200_percent.pak",
+            "resources.pak",
+        ],
+    ),
+];
+
 fn predef_from_root(root: &str) -> Option<RegKey> {
     match root {
         "HKEY_LOCAL_MACHINE" => Some(RegKey::predef(HKEY_LOCAL_MACHINE)),
