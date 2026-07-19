@@ -77,6 +77,7 @@ function App() {
 
   return (
     <div className="home" ref={areaRef} data-started={started}>
+      <h1 className="home-title">CEFDetector-Standalone</h1>
       {floaters.map((f) => (
         <img
           key={f.id}
