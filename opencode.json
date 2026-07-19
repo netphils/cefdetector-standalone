@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "docs-rs": {
+      "type": "local",
+      "command": [
+        "npx",
+        "@nuskey8/docs-rs-mcp@latest",
+        "-y"
+      ],
+      "enabled": true
+    }
+  }
+}
