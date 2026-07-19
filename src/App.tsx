@@ -1,50 +1,102 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
+import { useEffect, useRef, useState } from "react";
+import browserIcon from "./assets/browser-chrome-google-svgrepo-com.svg";
 import "./App.css";
 
-function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+const ICON_COUNT = 10;
+const ICON_SIZE = 56;
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+type Floater = {
+  id: number;
+  x: number;
+  y: number;
+  vx: number;
+  vy: number;
+};
+
+const rand = (min: number, max: number) => min + Math.random() * (max - min);
+
+function App() {
+  const [floaters, setFloaters] = useState<Floater[]>([]);
+  const areaRef = useRef<HTMLDivElement>(null);
+  const floatersRef = useRef<Floater[]>([]);
+  const [started, setStarted] = useState(false);
+
+  useEffect(() => {
+    const area = areaRef.current;
+    if (!area) return;
+
+    const { width, height } = area.getBoundingClientRect();
+    const initial: Floater[] = Array.from({ length: ICON_COUNT }, (_, id) => {
+      const angle = rand(0, Math.PI * 2);
+      const speed = rand(0.4, 1.1);
+      return {
+        id,
+        x: rand(0, Math.max(0, width - ICON_SIZE)),
+        y: rand(0, Math.max(0, height - ICON_SIZE)),
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+      };
+    });
+
+    floatersRef.current = initial;
+    setFloaters(initial);
+
+    let raf = 0;
+    const tick = () => {
+      const rect = area.getBoundingClientRect();
+      const w = rect.width;
+      const h = rect.height;
+      floatersRef.current = floatersRef.current.map((f) => {
+        let { x, y, vx, vy } = f;
+        x += vx;
+        y += vy;
+        if (x <= 0) {
+          x = 0;
+          vx = -vx;
+        } else if (x >= w - ICON_SIZE) {
+          x = w - ICON_SIZE;
+          vx = -vx;
+        }
+        if (y <= 0) {
+          y = 0;
+          vy = -vy;
+        } else if (y >= h - ICON_SIZE) {
+          y = h - ICON_SIZE;
+          vy = -vy;
+        }
+        return { ...f, x, y, vx, vy };
+      });
+      setFloaters(floatersRef.current.map((f) => ({ ...f })));
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(raf);
+  }, []);
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
-
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
-
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
+    <div className="home" ref={areaRef} data-started={started}>
+      {floaters.map((f) => (
+        <img
+          key={f.id}
+          className="floater"
+          src={browserIcon}
+          alt=""
+          style={{
+            left: f.x,
+            top: f.y,
+            width: ICON_SIZE,
+            height: ICON_SIZE,
+          }}
         />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+      ))}
+
+      <div className="home-center">
+        <button className="start-btn" onClick={() => setStarted(true)}>
+          开始检测
+        </button>
+      </div>
+    </div>
   );
 }
 
