@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import browserIcon from "./assets/browser-chrome-google-svgrepo-com.svg";
 import RepoBadge from "./RepoBadge";
+import ResultsPage from "./ResultsPage";
 import "./App.css";
 
 const ICON_COUNT = 10;
@@ -76,31 +77,39 @@ function App() {
   }, []);
 
   return (
-    <div className="home" ref={areaRef} data-started={started}>
-      <h1 className="home-title">CEFDetector-Standalone</h1>
-      {floaters.map((f) => (
-        <img
-          key={f.id}
-          className="floater"
-          src={browserIcon}
-          alt=""
-          style={{
-            left: f.x,
-            top: f.y,
-            width: ICON_SIZE,
-            height: ICON_SIZE,
-          }}
-        />
-      ))}
+    <>
+      {started ? (
+        <ResultsPage />
+      ) : (
+        <div className="home" ref={areaRef} data-started={started}>
+          <h1 className="home-title">CEFDetector-Standalone</h1>
+          {floaters.map((f) => (
+            <img
+              key={f.id}
+              className="floater"
+              src={browserIcon}
+              alt=""
+              style={{
+                left: f.x,
+                top: f.y,
+                width: ICON_SIZE,
+                height: ICON_SIZE,
+              }}
+            />
+          ))}
 
-      <div className="home-center">
-        <button className="start-btn" onClick={() => setStarted(true)}>
-          开始检测
-        </button>
-      </div>
+          <div className="home-center">
+            <button className="start-btn" onClick={() => setStarted(true)}>
+              开始检测
+            </button>
+          </div>
+
+          <RepoBadge />
+        </div>
+      )}
 
       <RepoBadge />
-    </div>
+    </>
   );
 }
 
