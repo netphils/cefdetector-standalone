@@ -1,7 +1,14 @@
-# Tauri + React + Typescript
+# CEFdetector Standalone Version
+去除了Everything依赖，通过注册表寻找应用。
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+使用Webview2，在保证原汁原味浏览器体验的同时减小了安装包大小。
 
-## Recommended IDE Setup
+原版：https://github.com/ShirasawaSama/CefDetectorX
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+## 截图
+<img width="1002" height="789" alt="屏幕截图 2026-07-19 202256" src="https://github.com/user-attachments/assets/44d177c4-3045-427b-961b-d7f1c2749d78" />
+
+## 图标
+[404](https://icons8.com/icon/PLJWnvM1vQLJ/page-not-found) icon by [Icons8](https://icons8.com)
+
+[Magnifying glass icons created by Freepik - Flaticon](https://www.flaticon.com/free-icons/magnifying-glass "magnifying glass icons")
