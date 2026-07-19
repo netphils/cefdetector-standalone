@@ -63,8 +63,12 @@
   font-size: 0.95rem;
 }
 
-.repo-modal-link:hover {
-  text-decoration: underline;
+.repo-modal-versions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.85rem;
+  color: #666;
 }
 
 .repo-modal-close {
@@ -96,5 +100,9 @@
 
   .repo-modal-title {
     color: #f6f6f6;
+  }
+
+  .repo-modal-versions {
+    color: #aaa;
   }
 }
