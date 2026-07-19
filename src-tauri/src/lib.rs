@@ -1,5 +1,8 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use tauri::Emitter;
+use winreg::enums::*;
+use winreg::RegKey;
+
 #[derive(Clone, serde::Serialize)]
 #[serde(rename_all = "camelCase")]
 struct AppEntry {
@@ -7,6 +10,20 @@ struct AppEntry {
     name: String,
     app_type: String,
     size: String,
+}
+
+const UNINSTALL_KEYS: &[&str] = &[
+    "HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
+    "HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
+    "HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
+];
+
+fn predef_from_root(root: &str) -> Option<RegKey> {
+    match root {
+        "HKEY_LOCAL_MACHINE" => Some(RegKey::predef(HKEY_LOCAL_MACHINE)),
+        "HKEY_CURRENT_USER" => Some(RegKey::predef(HKEY_CURRENT_USER)),
+        _ => None,
+    }
 }
 
 #[tauri::command]
